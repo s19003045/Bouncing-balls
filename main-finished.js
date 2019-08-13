@@ -21,13 +21,6 @@ function isMobile() {
   catch (e) { return false; }
 }
 
-// 
-if (isMobile()) {
-  console.log("this is mobile")
-} else {
-  console.log("this is PC")
-}
-
 // Shape constructor
 function Shape(x, y, velX, velY, exists) {
   this.x = x
@@ -115,7 +108,11 @@ EvilCircle.prototype.checkBounds = function () {
   }
 }
 
-
+// 定義EvilCircle的update method
+EvilCircle.prototype.update = function () {
+  this.x += this.velX
+  this.y += this.velY
+}
 
 // 建立balls array，讓所有球的物件儲存於此
 let balls = []
@@ -160,23 +157,24 @@ Ball.prototype.collisionDetect = function () {
 EvilCircle.prototype.setControls = function () {
   // listen to keyboard
   var _this = this;
-  console.log(this)
 
   if (isMobile()) {
-    document.querySelector('canvas').addEventListener('touchmove', function (event) {
-      _this.x = event.touches[0].pageX
-      _this.y = event.touches[0].pageY
+    document.querySelector('canvas').addEventListener('touchstart', function (event) {
+
+
+      _this.velX = (event.touches[0].pageX - _this.x) * (1 / 80)
+      _this.velY = (event.touches[0].pageY - _this.y) * (1 / 80)
     })
   } else {
     window.onkeydown = function (e) {
       if (e.keyCode === 37) {
-        _this.x -= _this.velX;
+        _this.x -= _this.velX * 15;
       } else if (e.keyCode === 39) {
-        _this.x += _this.velX;
+        _this.x += _this.velX * 15;
       } else if (e.keyCode === 38) {
-        _this.y -= _this.velY;
+        _this.y -= _this.velY * 15;
       } else if (e.keyCode === 40) {
-        _this.y += _this.velY;
+        _this.y += _this.velY * 15;
       }
     }
   }
@@ -208,7 +206,7 @@ EvilCircle.prototype.collisionDetect = function () {
 
 // ============執行=========================
 // 建立一個evilCircle實例
-let evilCircle = new EvilCircle(150, 150, 15, 15, 'white', 15, true)
+let evilCircle = new EvilCircle(150, 150, 1, 1, 'white', 15, true)
 evilCircle.setControls()
 // 設定loop
 function loop() {
@@ -222,9 +220,18 @@ function loop() {
       balls[i].collisionDetect()
     }
   }
-  evilCircle.checkBounds()
-  evilCircle.draw()
-  evilCircle.collisionDetect()
+
+  if (isMobile()) {
+    evilCircle.checkBounds()
+    evilCircle.update()
+    evilCircle.draw()
+    evilCircle.collisionDetect()
+  } else {
+    evilCircle.checkBounds()
+    evilCircle.draw()
+    evilCircle.collisionDetect()
+  }
+
 
   requestAnimationFrame(loop);
 }
