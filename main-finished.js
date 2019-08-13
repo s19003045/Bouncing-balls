@@ -5,6 +5,10 @@ let ctx = canvas.getContext('2d')
 let width = canvas.width = window.innerWidth
 let height = canvas.height = window.innerHeight
 
+
+// 選定result
+let gameResult = document.querySelector('.result')
+
 // 設定球數
 let ballCounts = 0
 let ballCountDisplay = document.querySelector('span')
@@ -221,6 +225,7 @@ function loop() {
     }
   }
 
+  // 區別使用裝置，執行不同動作
   if (isMobile()) {
     evilCircle.checkBounds()
     evilCircle.update()
@@ -232,8 +237,18 @@ function loop() {
     evilCircle.collisionDetect()
   }
 
-
-  requestAnimationFrame(loop);
+  // 判斷何時贏、何時輸、何時繼續loop
+  if (evilCircle.size <= 0) {
+    gameResult.textContent = 'You Lose'
+    gameResult.classList.remove('hidden')
+    cancelAnimationFrame(loop)
+  } else if (ballCounts > 0) {
+    requestAnimationFrame(loop);
+  } else if (ballCounts === 0) {
+    gameResult.textContent = 'You Win'
+    gameResult.classList.remove('hidden')
+    cancelAnimationFrame(loop)
+  }
 }
 
 // 執行loop
