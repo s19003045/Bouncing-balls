@@ -15,6 +15,19 @@ function random(min, max) {
 }
 
 
+// check是否為mobile
+function isMobile() {
+  try { document.createEvent("TouchEvent"); return true; }
+  catch (e) { return false; }
+}
+
+// 
+if (isMobile()) {
+  console.log("this is mobile")
+} else {
+  console.log("this is PC")
+}
+
 // Shape constructor
 function Shape(x, y, velX, velY, exists) {
   this.x = x
@@ -148,17 +161,27 @@ EvilCircle.prototype.setControls = function () {
   // listen to keyboard
   var _this = this;
   console.log(this)
-  window.onkeydown = function (e) {
-    if (e.keyCode === 37) {
-      _this.x -= _this.velX;
-    } else if (e.keyCode === 39) {
-      _this.x += _this.velX;
-    } else if (e.keyCode === 38) {
-      _this.y -= _this.velY;
-    } else if (e.keyCode === 40) {
-      _this.y += _this.velY;
+
+  if (isMobile()) {
+    document.querySelector('canvas').addEventListener('touchmove', function (event) {
+      _this.x = event.touches[0].pageX
+      _this.y = event.touches[0].pageY
+    })
+  } else {
+    window.onkeydown = function (e) {
+      if (e.keyCode === 37) {
+        _this.x -= _this.velX;
+      } else if (e.keyCode === 39) {
+        _this.x += _this.velX;
+      } else if (e.keyCode === 38) {
+        _this.y -= _this.velY;
+      } else if (e.keyCode === 40) {
+        _this.y += _this.velY;
+      }
     }
   }
+
+
 }
 
 // EvilCircle 的collisionDetect method
