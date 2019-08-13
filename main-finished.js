@@ -200,7 +200,7 @@ EvilCircle.prototype.collisionDetect = function () {
       if (distance <= (this.size + balls[j].size)) {
         balls[j].exists = false
         _this.size += 2
-        ballCounts -= 2
+        ballCounts -= 1
         ballCountDisplay.textContent = ballCounts
       }
     }
