@@ -36,12 +36,12 @@ h3 {
   text-shadow: 0 0 2px white;
 }
 .result {
-  display: table;
+  /* display: table; */
   font-size: 4em;
   color: #fff;
   position: absolute;
   text-align: center;
-  top: 40%;
+  top: 10%;
   left: 40%;
 }
 .hidden {

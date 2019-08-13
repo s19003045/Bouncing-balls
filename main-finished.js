@@ -120,7 +120,7 @@ EvilCircle.prototype.update = function () {
 
 // 建立balls array，讓所有球的物件儲存於此
 let balls = []
-while (balls.length < 25) {
+while (balls.length < 20) {
   let size = random(10, 20)
   let ball = new Ball(
     random(0 + size, width - size),
@@ -165,7 +165,6 @@ EvilCircle.prototype.setControls = function () {
   if (isMobile()) {
     document.querySelector('canvas').addEventListener('touchstart', function (event) {
 
-
       _this.velX = (event.touches[0].pageX - _this.x) * (1 / 80)
       _this.velY = (event.touches[0].pageY - _this.y) * (1 / 80)
     })
@@ -200,8 +199,8 @@ EvilCircle.prototype.collisionDetect = function () {
       // 若兩球球心的距離 <= 兩球半徑相加，則兩球的color變色
       if (distance <= (this.size + balls[j].size)) {
         balls[j].exists = false
-        _this.size += 1
-        ballCounts -= 1
+        _this.size += 2
+        ballCounts -= 2
         ballCountDisplay.textContent = ballCounts
       }
     }
