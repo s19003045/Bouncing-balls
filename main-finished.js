@@ -96,43 +96,10 @@ Ball.prototype.collisionDetect = function () {
 
   }
 
-  // 球撞到block：反彈
-  for (j = 0; j < blocks.length; j++) {
-    let blockX = blocks[j].x
-    let blockY = blocks[j].y
-    let blockH = blocks[j].height
-    let blockW = blocks[j].width
+  // 撞到block反彈
+  hitBlock(this)
 
-    if (this.x >= (blockX - (blockW / 2)) && this.x <= (blockX + (blockW / 2))) {
-      // 球撞到磚塊的上邊
-      if (this.y < blockY && Math.abs(blockY - this.y) <= ((blockH) / 2 + this.size)) {
-        this.velY = -(this.velY)
-        this.y = blockY - blockH / 2 - this.size - 1
-      }
-      // 球撞到磚塊的下邊
-      else if (this.y > blockY && Math.abs(blockY - this.y) <= ((blockH) / 2 + this.size)) {
-        this.velY = -(this.velY)
-        this.y = blockY + blockH / 2 + this.size + 1
-      }
-    }
-    else if (this.y >= (blockY - (blockH / 2)) && this.y <= (blockY + (blockH / 2))) {
-      // 球撞到磚塊的右邊
-      if (this.x > blockX && Math.abs(blockX - this.x) <= ((blockW) / 2 + this.size + this.velX)) {
-        this.velX = -(this.velX)
-        this.x = blockX + blockW / 2 + this.size + 1
-      }
-      // 球撞到磚塊的左邊
-      else if (this.x < blockX && Math.abs(blockX - this.x) <= ((blockW) / 2 + this.size + this.velX)) {
-        this.velX = -(this.velX)
-        this.x = blockX - blockW / 2 - this.size - 1
-      }
-    }
-
-  }
 }
-
-// Ball的hitBlock method
-
 
 // 定義邪惡圈：inherit Shape
 function EvilCircle(x, y, velX, velY, color, size, exists) {
@@ -160,21 +127,21 @@ EvilCircle.prototype.draw = function () {
 EvilCircle.prototype.checkBounds = function () {
 
   if ((this.x + this.size) >= width) {
-    this.x = width - this.size * 2
+    this.x = width - this.size * (4 / 3)
     this.size -= 1
   }
 
   if ((this.x - this.size) <= 0) {
-    this.x = 0 + this.size * 2
+    this.x = 0 + this.size * (4 / 3)
     this.size -= 1
   }
   if ((this.y + this.size) >= height) {
-    this.y = height - this.size * 2
+    this.y = height - this.size * (4 / 3)
     this.size -= 1
   }
 
   if ((this.y - this.size) <= 0) {
-    this.y = 0 + this.size * 2
+    this.y = 0 + this.size * (4 / 3)
     this.size -= 1
   }
 }
@@ -217,22 +184,10 @@ EvilCircle.prototype.setControls = function () {
         _this.velY += 3;
       }
     }
-
-    // window.onkeydown = function (e) {
-    //   if (e.keyCode === 37) {
-    //     _this.x -= _this.velX * 15;
-    //   } else if (e.keyCode === 39) {
-    //     _this.x += _this.velX * 15;
-    //   } else if (e.keyCode === 38) {
-    //     _this.y -= _this.velY * 15;
-    //   } else if (e.keyCode === 40) {
-    //     _this.y += _this.velY * 15;
-    //   }
-    // }
   }
 
-
 }
+
 
 // EvilCircle 的collisionDetect method
 EvilCircle.prototype.collisionDetect = function () {
@@ -255,39 +210,8 @@ EvilCircle.prototype.collisionDetect = function () {
     }
   }
 
-  // 球撞到block：反彈
-  for (j = 0; j < blocks.length; j++) {
-    let blockX = blocks[j].x
-    let blockY = blocks[j].y
-    let blockH = blocks[j].height
-    let blockW = blocks[j].width
-
-    if (this.x >= (blockX - (blockW / 2) - this.size) && this.x <= (blockX + (blockW / 2) + this.size)) {
-      // 球撞到磚塊的上邊
-      if (this.y < blockY && Math.abs(blockY - this.y) <= ((blockH) / 2 + this.size)) {
-        this.velY = -(this.velY)
-        this.y = blockY - blockH / 2 - this.size - 1
-      }
-      // 球撞到磚塊的下邊
-      else if (this.y > blockY && Math.abs(blockY - this.y) <= ((blockH) / 2 + this.size)) {
-        this.velY = -(this.velY)
-        this.y = blockY + blockH / 2 + this.size + 1
-      }
-    }
-    else if (this.y >= (blockY - (blockH / 2) - this.size) && this.y <= (blockY + (blockH / 2) + this.size)) {
-      // 球撞到磚塊的右邊
-      if (this.x > blockX && Math.abs(blockX - this.x) <= ((blockW) / 2 + this.size + this.velX)) {
-        this.velX = -(this.velX)
-        this.x = blockX + blockW / 2 + this.size + 1
-      }
-      // 球撞到磚塊的左邊
-      else if (this.x < blockX && Math.abs(blockX - this.x) <= ((blockW) / 2 + this.size + this.velX)) {
-        this.velX = -(this.velX)
-        this.x = blockX - blockW / 2 - this.size - 1
-      }
-    }
-
-  }
+  // 撞到block反彈
+  hitBlock(this)
 }
 
 // 定義block的constructor
@@ -309,7 +233,42 @@ Block.prototype.draw = function () {
   ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height)
 }
 
+// ball 或 evilCircle 撞到 block 的函式
+function hitBlock(ball) {
+  // 球撞到block：反彈
+  for (j = 0; j < blocks.length; j++) {
+    let blockX = blocks[j].x
+    let blockY = blocks[j].y
+    let blockH = blocks[j].height
+    let blockW = blocks[j].width
 
+    if (ball.x >= (blockX - (blockW / 2) - (ball.size) / 2) && ball.x <= (blockX + (blockW / 2) + (ball.size) / 2)) {
+      // 球撞到磚塊的上邊
+      if (ball.y < blockY && Math.abs(blockY - ball.y) <= ((blockH) / 2 + ball.size)) {
+        ball.velY = -(ball.velY)
+        ball.y = blockY - blockH / 2 - ball.size - 1
+      }
+      // 球撞到磚塊的下邊
+      else if (ball.y > blockY && Math.abs(blockY - ball.y) <= ((blockH) / 2 + ball.size)) {
+        ball.velY = -(ball.velY)
+        ball.y = blockY + blockH / 2 + ball.size + 1
+      }
+    }
+    else if (ball.y >= (blockY - (blockH / 2) - (ball.size) / 2) && ball.y <= (blockY + (blockH / 2) + (ball.size) / 2)) {
+      // 球撞到磚塊的右邊
+      if (ball.x > blockX && Math.abs(blockX - ball.x) <= ((blockW) / 2 + ball.size + ball.velX)) {
+        ball.velX = -(ball.velX)
+        ball.x = blockX + blockW / 2 + ball.size + 1
+      }
+      // 球撞到磚塊的左邊
+      else if (ball.x < blockX && Math.abs(blockX - ball.x) <= ((blockW) / 2 + ball.size + ball.velX)) {
+        ball.velX = -(ball.velX)
+        ball.x = blockX - blockW / 2 - ball.size - 1
+      }
+    }
+
+  }
+}
 
 // ============執行=========================
 // 建立blocks array，讓所有球的物件儲存於此
@@ -352,7 +311,6 @@ while (balls.length < 25) {
 let evilCircle = new EvilCircle(150, 150, 1, 1, 'white', 15, true)
 evilCircle.setControls()
 
-console.log(evilCircle)
 // 設定loop
 function loop() {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -374,18 +332,11 @@ function loop() {
     }
   }
 
-  // 區別使用裝置，執行不同動作
-  if (isMobile()) {
-    evilCircle.checkBounds()
-    evilCircle.update()
-    evilCircle.draw()
-    evilCircle.collisionDetect()
-  } else {
-    evilCircle.checkBounds()
-    evilCircle.update()
-    evilCircle.draw()
-    evilCircle.collisionDetect()
-  }
+  // 繪製evilCircle
+  evilCircle.checkBounds()
+  evilCircle.update()
+  evilCircle.draw()
+  evilCircle.collisionDetect()
 
   // 判斷何時贏、何時輸、何時繼續loop
   if (evilCircle.size <= 0) {
